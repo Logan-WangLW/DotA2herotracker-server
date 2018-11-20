@@ -49,9 +49,6 @@ app.use('/api/auth/', authRouter);
 app.use('/api/favorites', favoriteRouter);
 app.use('/api/', heroesRouter);
 
-//3rd party api request
-
-
 let server;
 
 function runServer(databaseUrl, port = PORT) {

@@ -10,4 +10,12 @@ router.get('/herostats', (req, res) => {
     });
 });
 
+router.get('/heroes/:id/matchups', (req, res) => {
+  const { id } = req.params;
+  axios.get(`https://api.opendota.com/api/heroes/${id}/matchups`)
+    .then(response => {
+      res.json(response.data);
+    });
+});
+
 module.exports = router;
