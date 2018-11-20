@@ -15,7 +15,7 @@ router.use(bodyParser.json());
 //get all favorites
 router.get('/', (req, res, next) => {
 
-  Favorite.find()
+  Favorite.find({ userId: req.user.id })
     .then(results => {
       res.json(results);
     })
