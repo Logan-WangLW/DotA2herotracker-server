@@ -6,6 +6,8 @@ const schema = mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
 });
 
+schema.set('timestamps', true);
+
 schema.set('toJSON', {
   virtuals: true,
   transform: (doc, result) => {
