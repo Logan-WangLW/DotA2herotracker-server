@@ -5,17 +5,17 @@ const Favorite = require('../models/favorites');
 
 const router = express.Router();
 const passport = require('passport');
-const bodyParser = require('body-parser');
+
 
 // Protect endpoints using JWT Strategy
 router.use('/', passport.authenticate('jwt', { session: false, failWithError: true }));
 
-router.use(bodyParser.json());
+
 
 //get all favorites
 router.get('/', (req, res, next) => {
 
-  Favorite.find({ userId: req.user.id })
+  Favorite.findOne({ userId: req.user.id })
     .then(results => {
       res.json(results);
     })

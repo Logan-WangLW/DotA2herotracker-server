@@ -11,10 +11,13 @@ const options = { session: false, failWithError: true };
 const localAuth = passport.authenticate('local', options);
 
 function createAuthToken(user) {
-  return jwt.sign({ user }, JWT_SECRET, {
-    subject: user.username,
-    expiresIn: JWT_EXPIRY
-  });
+  return jwt.sign({ user: { id: user._id } },
+    JWT_SECRET,
+    {
+      subject: user.username,
+      expiresIn: JWT_EXPIRY,
+      algorithm: 'HS256'
+    });
 }
 
 const jwtAuth = passport.authenticate('jwt', { session: false, failWithError: true });
