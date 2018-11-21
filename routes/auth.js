@@ -11,7 +11,7 @@ const options = { session: false, failWithError: true };
 const localAuth = passport.authenticate('local', options);
 
 function createAuthToken(user) {
-  return jwt.sign({ user: { id: user._id } },
+  return jwt.sign({ user: { id: user._id, username: user.username } },
     JWT_SECRET,
     {
       subject: user.username,
@@ -22,13 +22,15 @@ function createAuthToken(user) {
 
 const jwtAuth = passport.authenticate('jwt', { session: false, failWithError: true });
 
-router.post('/refresh', jwtAuth, (req, res) => {
+//login end point
+router.post('/', localAuth, (req, res) => {
   const authToken = createAuthToken(req.user);
   res.json({ authToken });
 });
-
-// ========================= POST login endpoint ==================== //
-router.post('/', localAuth, (req, res) => {
+//refresh
+router.post('/refresh', jwtAuth, (req, res) => {
+  // console.log(jwtAuth);
+  // console.log(req.user);
   const authToken = createAuthToken(req.user);
   res.json({ authToken });
 });
