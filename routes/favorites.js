@@ -12,7 +12,7 @@ router.use(passport.authenticate('jwt', { session: false, failWithError: true })
 
 //get all favorites
 router.get('/', (req, res, next) => {
-  const userId = req.user.id;
+  const userId = req.user._id;
 
   Favorite.find({ userId: userId })
     .then(results => {

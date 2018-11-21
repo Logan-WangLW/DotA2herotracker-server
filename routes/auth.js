@@ -6,12 +6,13 @@ const jwt = require('jsonwebtoken');
 const router = express.Router();
 
 const { JWT_SECRET, JWT_EXPIRY } = require('../config.js');
-
+const User = require('../models/user');
 const options = { session: false, failWithError: true };
 const localAuth = passport.authenticate('local', options);
 
 function createAuthToken(user) {
-  return jwt.sign({ user: { id: user._id, username: user.username } },
+
+  return jwt.sign({ user },
     JWT_SECRET,
     {
       subject: user.username,
@@ -30,9 +31,12 @@ router.post('/', localAuth, (req, res) => {
 //refresh
 router.post('/refresh', jwtAuth, (req, res) => {
   // console.log(jwtAuth);
-  // console.log(req.user);
+  // User.findOne({ username: req.user.username })
+  //   .then(user => {
   const authToken = createAuthToken(req.user);
   res.json({ authToken });
+  // });
+
 });
 
 module.exports = router;
