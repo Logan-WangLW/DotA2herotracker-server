@@ -10,8 +10,9 @@ const User = require('../models/user');
 const options = { session: false, failWithError: true };
 const localAuth = passport.authenticate('local', options);
 
+// function createAuthToken({ _id: id, username }) {
 function createAuthToken(user) {
-
+  // return jwt.sign({ user: { id, username } },
   return jwt.sign({ user },
     JWT_SECRET,
     {

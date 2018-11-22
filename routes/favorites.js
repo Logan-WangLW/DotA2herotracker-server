@@ -12,9 +12,7 @@ router.use(passport.authenticate('jwt', { session: false, failWithError: true })
 
 //get all favorites
 router.get('/', (req, res, next) => {
-  const userId = req.user._id;
-
-  Favorite.find({ userId: userId })
+  Favorite.find({ userId: req.user._id })
     .then(results => {
       res.json(results);
     })
@@ -24,10 +22,8 @@ router.get('/', (req, res, next) => {
 });
 
 //post/create favorite
-router.post('/', (req, res, next) => {
-  const { heroes } = req.body;
-  const userId = req.user.id;
-  const newObj = { heroes, userId };
+router.post('/:id', (req, res, next) => {
+  const newObj = { heroes: req.params.id, userId: req.user._id };
 
   Favorite.create(newObj)
     .then(result => {
@@ -42,16 +38,16 @@ router.post('/', (req, res, next) => {
 });
 
 //delete endpoint
-router.delete('/', (req, res, next) => {
-  const id = req.body.id;
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    const err = new Error('The `id` is not valid');
-    err.status = 400;
-    return next(err);
-  }
-  Favorite.findOneAndDelete(id)
+router.delete('/:id', (req, res, next) => {
+  const id = req.params._id;
+  Favorite.findOneAndRemove(id)
     .then(() => {
-      res.sendStatus(204).end();
+      console.log('fav is delete', id);
+      return Favorite.find({ userId: req.user._id });
+    })
+    .then(results => {
+      console.log('results back', results);
+      res.json(results);
     })
     .catch(err => next(err));
 });
