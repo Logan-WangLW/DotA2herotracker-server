@@ -12,7 +12,7 @@ router.use(passport.authenticate('jwt', { session: false, failWithError: true })
 
 //get all favorites
 router.get('/', (req, res, next) => {
-  Favorite.find({ userId: req.user._id })
+  Favorite.find({ userId: req.user.id })
     .then(results => {
       res.json(results);
     })
@@ -23,7 +23,7 @@ router.get('/', (req, res, next) => {
 
 //post/create favorite
 router.post('/:id', (req, res, next) => {
-  const newObj = { heroes: req.params.id, userId: req.user._id };
+  const newObj = { heroes: req.params.id, userId: req.user.id };
 
   Favorite.create(newObj)
     .then(result => {
@@ -39,14 +39,14 @@ router.post('/:id', (req, res, next) => {
 
 //delete endpoint
 router.delete('/:id', (req, res, next) => {
-  const id = req.params._id;
-  Favorite.findOneAndRemove(id)
+  const id = req.params.id;
+  Favorite.findByIdAndDelete(id)
     .then(() => {
-      console.log('fav is delete', id);
-      return Favorite.find({ userId: req.user._id });
+      console.log('Deleted favorite:', id);
+      return Favorite.find({ userId: req.user.id });
     })
     .then(results => {
-      console.log('results back', results);
+      console.log('Leftover favorites:', results);
       res.json(results);
     })
     .catch(err => next(err));
