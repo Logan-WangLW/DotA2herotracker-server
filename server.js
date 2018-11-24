@@ -7,6 +7,7 @@ const morgan = require('morgan');
 const passport = require('passport');
 const bodyParser = require('body-parser');
 const { PORT, CLIENT_ORIGIN, DATABASE_URL } = require('./config');
+const { dbConnect } = require('./db-mongoose');
 
 const usersRouter = require('./routes/users.js');
 const authRouter = require('./routes/auth.js');
@@ -34,6 +35,8 @@ app.use(function (req, res, next) {
   }
   next();
 });
+
+
 
 app.use(bodyParser.json());
 
@@ -88,6 +91,7 @@ function closeServer() {
 }
 
 if (require.main === module) {
+  dbConnect();
   runServer(DATABASE_URL).catch(err => console.error(err));
 }
 
