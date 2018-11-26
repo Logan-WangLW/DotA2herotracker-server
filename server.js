@@ -23,17 +23,22 @@ app.use(bodyParser.json());
 passport.use(localStrategy);
 passport.use(jwtStrategy);
 
-app.use(
-  morgan(process.env.NODE_ENV === 'production' ? 'common' : 'dev', {
-    skip: (req, res) => process.env.NODE_ENV === 'test'
-  })
-);
+// app.use(
+//   morgan(process.env.NODE_ENV === 'production' ? 'common' : 'dev', {
+//     skip: (req, res) => process.env.NODE_ENV === 'test'
+//   })
+// );
 
 app.use(
   cors({
     origin: CLIENT_ORIGIN
   })
 );
+
+//Test server endpoint
+app.get('/api/goodmorning', (req, res) => {
+  res.send('goodmorning');
+});
 
 // Mount Routers
 app.use('/register', usersRouter);
