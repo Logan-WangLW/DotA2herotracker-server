@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 const morgan = require('morgan');
 const passport = require('passport');
 const bodyParser = require('body-parser');
-const { PORT, CLIENT_ORIGIN, DATABASE_URL } = require('./config');
+const { PORT, CLIENT_ORIGIN } = require('./config');
 const { dbConnect } = require('./db-mongoose');
 
 const usersRouter = require('./routes/users.js');
@@ -20,16 +20,14 @@ mongoose.Promise = global.Promise;
 
 const app = express();
 app.use(bodyParser.json());
+passport.use(localStrategy);
+passport.use(jwtStrategy);
 
 app.use(
   morgan(process.env.NODE_ENV === 'production' ? 'common' : 'dev', {
     skip: (req, res) => process.env.NODE_ENV === 'test'
   })
 );
-
-
-passport.use(localStrategy);
-passport.use(jwtStrategy);
 
 app.use(
   cors({
@@ -43,44 +41,20 @@ app.use('/auth', authRouter);
 app.use('/favorites', favoriteRouter);
 app.use('/', heroesRouter);
 
-let server;
-
-function runServer(databaseUrl, port = PORT) {
-
-  return new Promise((resolve, reject) => {
-    mongoose.connect(databaseUrl, err => {
-      if (err) {
-        return reject(err);
-      }
-      server = app.listen(port, () => {
-        console.log(`Your app is listening on port ${port}`);
-        resolve();
-      })
-        .on('error', err => {
-          mongoose.disconnect();
-          reject(err);
-        });
+function runServer(port = PORT) {
+  const server = app
+    .listen(port, () => {
+      console.info(`App listening on port ${server.address().port}`);
+    })
+    .on('error', err => {
+      console.error('Express failed:');
+      console.error(err);
     });
-  });
-}
-
-function closeServer() {
-  return mongoose.disconnect().then(() => {
-    return new Promise((resolve, reject) => {
-      console.log('Closing server');
-      server.close(err => {
-        if (err) {
-          return reject(err);
-        }
-        resolve();
-      });
-    });
-  });
 }
 
 if (require.main === module) {
   dbConnect();
-  runServer(DATABASE_URL).catch(err => console.error(err));
+  runServer();
 }
 
-module.exports = { app, runServer, closeServer };
+module.exports = { app };
