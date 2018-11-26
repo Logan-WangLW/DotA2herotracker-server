@@ -1,5 +1,5 @@
 'use strict';
-require('dotenv').config();
+
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -20,20 +20,22 @@ mongoose.Promise = global.Promise;
 
 const app = express();
 app.use(bodyParser.json());
-passport.use(localStrategy);
-passport.use(jwtStrategy);
 
-// app.use(
-//   morgan(process.env.NODE_ENV === 'production' ? 'common' : 'dev', {
-//     skip: (req, res) => process.env.NODE_ENV === 'test'
-//   })
-// );
+
+app.use(
+  morgan(process.env.NODE_ENV === 'production' ? 'common' : 'dev', {
+    skip: (req, res) => process.env.NODE_ENV === 'test'
+  })
+);
 
 app.use(
   cors({
     origin: CLIENT_ORIGIN
   })
 );
+
+passport.use(localStrategy);
+passport.use(jwtStrategy);
 
 //Test server endpoint
 app.get('/api/goodmorning', (req, res) => {
