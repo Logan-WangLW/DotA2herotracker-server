@@ -20,6 +20,19 @@ router.get('/herostats', (req, res) => {
       //console.log(heroes);
     }).catch(err => console.log(err));
 });
+//get single hero
+router.get('/heroes/:id', (req, res) => {
+  axios.get('https://api.opendota.com/api/herostats')
+    .then(response => {
+      const hero = response.data.find(el => el.id === parseInt(req.params.id));
+      //console.log(hero);
+      if (hero) {
+        res.json(hero);
+      } else {
+        res.sendStatus(404);
+      }
+    });
+});
 
 router.get('/heroes/:id/matchups', (req, res) => {
   const { id } = req.params;
