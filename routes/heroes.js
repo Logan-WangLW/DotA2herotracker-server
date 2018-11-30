@@ -70,7 +70,7 @@ router.get('/heroes/:id/matchups', (req, res) => {
       //finding highest win rate
       for (let i = 0; i < response.data.length; i++) {
         const item = response.data[i];
-        if (item.games_played > 15) {
+        if (item.games_played > 10) {
           let winRate = item.wins / item.games_played;
           if (winRate > highWinRate) {
             highWinRate = winRate;
@@ -81,7 +81,7 @@ router.get('/heroes/:id/matchups', (req, res) => {
       //finding lowest winrate
       for (let i = 0; i < response.data.length; i++) {
         const item = response.data[i];
-        if (item.games_played > 15) {
+        if (item.games_played > 10) {
           let winRate = item.wins / item.games_played;
           if (winRate < lowWinRate) {
             lowWinRate = winRate;
